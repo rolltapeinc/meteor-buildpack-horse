@@ -157,6 +157,11 @@ if [ -n "${BUILDPACK_PRELAUNCH_METEOR+1}" ]; then
   HOME=$METEOR_DIR timeout -s9 60 $METEOR --settings settings.json || true
 fi
 
+# Grab any packages hosted on git.
+# We have to do this before the `meteor build` step.
+echo "-----> Grabbing git-based packages."
+cd $APP_SOURCE_DIR && make mgp
+
 # Now on to bundling. Don't put the bundle in $APP_CHECKOUT_DIR, or it will
 # recurse, trying to bundle up its own bundling.
 BUNDLE_DEST=`mktemp -d "$BUILDPACK_DIR/build-XXXX"`
